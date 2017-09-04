@@ -111,6 +111,9 @@ class Tests {
     fun computeDeviceCells() {
         assertEquals(listOf(0, 0, 0, 0, 0, 1, 1, 1, 1, 1), computeDeviceCells(10, "+>+>+>+>+"))
         assertEquals(listOf(-1, -1, -1, -1, -1, 0, 0, 0, 0, 0), computeDeviceCells(10, "<-<-<-<-<-"))
+
+        assertEquals(listOf(1), computeDeviceCells(1, "[]+"))
+
         assertEquals(listOf(1, 1, 1, 1, 1, 0, 0, 0, 0, 0), computeDeviceCells(10, "- <<<<< +[>+]"))
         assertEquals(listOf(0, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0),
                 computeDeviceCells(11, "<<<<< + >>>>>>>>>> --[<-] >+[>+] >++{--< <[<] >+[>+] >++}"))

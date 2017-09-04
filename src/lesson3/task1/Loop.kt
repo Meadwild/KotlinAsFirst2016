@@ -6,10 +6,11 @@ package lesson3.task1
  *
  * Вычисление факториала
  */
-fun factorial(n: Int): Double {
-    var result = 1.0
+fun factorial(n: Int): Long {
+    var result = 1L
     for (i in 1..n) {
-        result = result * i // Please do not fix in master
+        println(i)
+        result *= i // Please do not fix in master
     }
     return result
 }
@@ -57,7 +58,17 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Найти количество цифр в заданном числе n.
  * Например, число 1 содержит 1 цифру, 456 -- 3 цифры, 65536 -- 5 цифр.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var counter = 0
+    var nvar = n
+
+    do {
+        counter++
+        nvar /= 10
+    } while (nvar != 0)
+
+    return counter
+}
 
 /**
  * Простая
@@ -140,7 +151,20 @@ fun revert(n: Int): Int = TODO()
  * первая цифра равна последней, вторая -- предпоследней и так далее.
  * 15751 -- палиндром, 3653 -- нет.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+
+    var nvar = n.toString()
+
+    for ((elem, index) in nvar.withIndex()) {
+
+    }
+
+    for (i in 0 until nvar.length)
+        if (nvar[i] != nvar[nvar.length - 1 - i]) return false
+
+    return true
+
+}
 
 /**
  * Средняя
@@ -166,4 +190,22 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  * 1123581321345589144...
  * Например, 2-я цифра равна 1, 9-я 2, 14-я 5.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+/* Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)*/
+fun fibSequenceDigit(n: Int): Int {
+
+    var fibSeq = ""
+    var fibMutableList = mutableListOf<Int>(1, 1)
+
+    fibSeq = fibMutableList.joinToString(separator = "")
+
+    while (fibSeq.length < n) {
+
+        val x = fibMutableList[fibMutableList.size - 1] + fibMutableList[fibMutableList.size - 2]
+        fibMutableList.add(x)
+
+        fibSeq = fibMutableList.joinToString(separator = "")
+
+    }
+
+    return Integer.decode(fibSeq[n - 1].toString())
+}

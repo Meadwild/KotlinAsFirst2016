@@ -59,7 +59,58 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  * 10 11 12  5
  *  9  8  7  6
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
+
+private fun countour(matrix: Matrix<Int>, startValue: Int, startX: Int, numberX: Int, startY: Int, numberY: Int): Matrix<Int> {
+    var iterator = startValue
+
+    for (i in startX until startX + numberX) {
+        iterator++
+
+        matrix[startY, i] = iterator
+
+        if (iterator == matrix.width * matrix.height) return matrix
+
+    }
+
+    for (k in startY + 1 until startY + numberY) {
+        iterator++
+
+        matrix[k, startX + numberX - 1] = iterator
+
+        if (iterator == matrix.width * matrix.height) return matrix
+
+    }
+
+    for (i in startX + numberX - 2 downTo startX) {
+        iterator++
+
+        matrix[startY + numberY - 1, i] = iterator
+
+        if (iterator == matrix.width * matrix.height) return matrix
+    }
+
+    for (k in startY + numberY - 2 downTo startY + 1) {
+        iterator++
+
+        matrix[k, startX] = iterator
+
+        if (iterator == matrix.width * matrix.height) return matrix
+
+    }
+
+    if (iterator != matrix.width * matrix.height)
+        countour(matrix, iterator, startX + 1, numberX - 2, startY + 1, numberY - 2)
+
+    return matrix
+
+
+}
+
+fun generateSpiral(height: Int, width: Int): Matrix<Int> {
+
+    var matrix = createMatrix(height, width, 0)
+    return countour(matrix, 0, 0, width, 0, height)
+}
 
 /**
  * Сложная
@@ -154,7 +205,40 @@ fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> = TODO()
  * 0 0 1 0
  * 0 0 0 0
  */
-fun findHoles(matrix: Matrix<Int>): Holes = TODO()
+fun findHoles(matrix: Matrix<Int>): Holes {
+    var rows = mutableListOf<Int>()
+    var columns = mutableListOf<Int>()
+
+    for (i in 0 until matrix.height) {
+        var flag = true
+        for (k in 0 until matrix.width) {
+            if (matrix[i, k] != 0) {
+                flag = false
+                break
+            }
+        }
+
+        if (flag)
+            rows.add(i)
+    }
+
+
+    for (i in 0 until matrix.width) {
+        var flag = true
+        for (k in 0 until matrix.height) {
+            if (matrix[k, i] != 0) {
+                flag = false
+                break
+            }
+        }
+
+        if (flag)
+            columns.add(i)
+    }
+
+    return Holes(rows, columns)
+
+}
 
 /**
  * Класс для описания местонахождения "дырок" в матрице
@@ -205,7 +289,15 @@ fun canOpenLock(key: Matrix<Int>, lock: Matrix<Int>): Triple<Boolean, Int, Int> 
  * Инвертировать заданную матрицу.
  * При инвертировании знак каждого элемента матрицы следует заменить на обратный
  */
-operator fun Matrix<Int>.unaryMinus(): Matrix<Int> = TODO(this.toString())
+operator fun Matrix<Int>.unaryMinus(): Matrix<Int> {
+    for (i in 0 until this.height) {
+        for (k in 0 until this.width) {
+            this[i, k] = -this[i, k]
+        }
+    }
+
+    return this
+}
 
 /**
  * Средняя

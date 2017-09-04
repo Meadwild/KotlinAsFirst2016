@@ -2,6 +2,7 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import java.lang.Math.pow
 
 /**
  * Пример
@@ -204,7 +205,24 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+
+    var acc: Long = 0
+
+    for (i in str.length - 1 downTo 0) {
+
+        var code: Int
+
+        if (str[i].isLetter())
+            code = str[i].toLowerCase().toInt() - 'a'.toInt() + 10
+        else
+            code = str[i].toInt() - '0'.toInt()
+
+        acc += code * (pow(base.toDouble(), str.length - 1 - i.toDouble()).toInt())
+    }
+
+    return acc.toInt()
+}
 
 /**
  * Сложная

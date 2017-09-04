@@ -1,10 +1,27 @@
 package lesson7.task1
 
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 class Tests {
+
+    @Test
+    fun infixTest() {
+
+        var t = 5
+
+        infix fun Int.insideFunc(x: Int): Unit {
+            println("hello $this $Unit $t + $x")
+        }
+
+        4 insideFunc 5
+
+        val matrix = createMatrix(4, 6, 0.0)
+
+    }
+
+
     @Test
     @Tag("Easy")
     fun createMatrix() {

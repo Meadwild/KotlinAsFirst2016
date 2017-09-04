@@ -2,6 +2,7 @@
 package lesson6.task1
 
 import lesson1.task1.sqr
+import java.lang.Math.pow
 
 /**
  * Точка на плоскости
@@ -47,6 +48,7 @@ data class Triangle(val a: Point, val b: Point, val c: Point) {
  * Окружность с заданным центром и радиусом
  */
 data class Circle(val center: Point, val radius: Double) {
+
     /**
      * Простая
      *
@@ -55,14 +57,20 @@ data class Circle(val center: Point, val radius: Double) {
      * расстояние между их центрами минус сумма их радиусов.
      * Расстояние между пересекающимися окружностями считать равным 0.0.
      */
-    fun distance(other: Circle): Double = TODO()
+    fun distance(other: Circle): Double {
+        val dist = center.distance(other.center) - (this.radius + other.radius)
+        if (dist > 0.0)
+            return dist
+        else
+            return 0.0
 
+    }
     /**
      * Тривиальная
      *
      * Вернуть true, если и только если окружность содержит данную точку НА себе или ВНУТРИ себя
      */
-    fun contains(p: Point): Boolean = TODO()
+    fun contains(p: Point): Boolean = center.distance(p) <= radius
 }
 
 /**
@@ -113,7 +121,6 @@ fun lineBySegment(s: Segment): Line = TODO()
  * Построить прямую по двум точкам
  */
 fun lineByPoints(a: Point, b: Point): Line = TODO()
-
 /**
  * Сложная
  *
@@ -127,7 +134,31 @@ fun bisectorByPoints(a: Point, b: Point): Line = TODO()
  * Задан список из n окружностей на плоскости. Найти пару наименее удалённых из них.
  * Если в списке менее двух окружностей, бросить IllegalArgumentException
  */
-fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = TODO()
+fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
+
+    var circlesList = circles.toList()
+
+    if (circlesList.size < 2)
+        throw IllegalArgumentException("")
+
+    var minDist = circlesList[0].distance(circlesList[1])
+
+    var circlePair = Pair<Circle, Circle>(circlesList[0], circlesList[1])
+
+    for ((index1, elem1) in circlesList.withIndex()) {
+
+        for ((index2, elem2) in circlesList.withIndex()) {
+
+            if ((index1 != index2) && (elem2.distance(elem1) < minDist)) {
+                minDist = elem2.distance(elem1)
+                circlePair = Pair(elem1, elem2)
+            }
+        }
+
+    }
+    return circlePair
+
+}
 
 /**
  * Очень сложная
@@ -138,7 +169,31 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = TODO()
  * (построить окружность по трём точкам, или
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
-fun circleByThreePoints(a: Point, b: Point, c: Point): Circle = TODO()
+fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
+
+    val x12 = (a.x - b.x)
+    val x23 = (b.x - c.x)
+    val x31 = (c.x - a.x)
+
+    val y12 = (a.y - b.y)
+    val y23 = (b.y - c.y)
+    val y31 = (c.y - a.y)
+
+    val z1 = pow(a.x, 2.0) + pow(a.y, 2.0)
+    val z2 = pow(b.x, 2.0) + pow(b.y, 2.0)
+    val z3 = pow(c.x, 2.0) + pow(c.y, 2.0)
+
+    val zx = y12 * z3 + y23 * z1 + y31 * z2
+    val zy = x12 * z3 + x23 * z1 + x31 * z2
+    val z = x12 * y31 - y12 * x31
+
+    val a_center = -zx / (2 * z)
+    val b_center = zy / (2 * z)
+
+    val radius = pow(pow(a.x - a_center, 2.0) + pow(a.y - b_center, 2.0), 0.5)
+
+    return Circle(Point(a_center, b_center), radius)
+}
 
 /**
  * Очень сложная

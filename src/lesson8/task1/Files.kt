@@ -54,7 +54,40 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  *
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    TODO()
+
+    var substringsInclusionCounter = hashMapOf<String, Int>()
+
+    for (line in File(inputName).readLines()) {
+        for (substring in substrings) {
+
+            if (!substringsInclusionCounter.containsKey(substring))
+                substringsInclusionCounter.put(substring, 0)
+
+            var mutableLine = line
+
+            if (mutableLine.contains(substring, ignoreCase = true)) {
+
+                var count = substringsInclusionCounter.get(substring)
+
+                do {
+
+                    if (count != null) {
+                        count++
+                        substringsInclusionCounter.put(substring, count)
+                    }
+
+                    mutableLine = mutableLine.substring(mutableLine.indexOf(substring, ignoreCase = true) + substring.length)
+
+                } while (mutableLine.contains(substring, ignoreCase = true))
+
+            }
+
+        }
+
+    }
+
+    return substringsInclusionCounter
+
 }
 
 
@@ -119,7 +152,55 @@ fun centerFile(inputName: String, outputName: String) {
  *
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+
+    var outputWriter = File(outputName).bufferedWriter()
+
+    var length = -1
+
+    for (line in File(inputName).readLines()) {
+        if (line.trim().length > length) length = line.trim().length
+    }
+
+    for (line in File(inputName).readLines()) {
+
+        var mutableLine = line.trim()
+
+        if (mutableLine.isBlank()) {
+            outputWriter.newLine()
+
+        } else {
+            var searchStringPartIndex = 0
+
+            var currentNumberOfSpaces = 2
+
+            if (mutableLine.contains(" "))
+                while (mutableLine.length < length) {
+
+                    var leftPart = mutableLine.substring(0, searchStringPartIndex)
+                    var rightPart = mutableLine.substring(searchStringPartIndex)
+
+                    if (rightPart.indexOf(" ") == -1) {
+
+                        currentNumberOfSpaces++
+                        searchStringPartIndex = 0
+                        continue
+                    }
+
+                    searchStringPartIndex = rightPart.indexOf(" ") + leftPart.length + currentNumberOfSpaces
+
+                    rightPart = rightPart.replaceFirst(" ", "  ")
+
+                    mutableLine = leftPart + rightPart
+
+                }
+
+            outputWriter.write(mutableLine)
+            outputWriter.newLine()
+        }
+    }
+
+    outputWriter.close()
+
 }
 
 /**

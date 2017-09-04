@@ -39,7 +39,7 @@ fun main(args: Array<String>) {
     println("Введите время в формате ЧЧ:ММ:СС")
     val line = readLine()
     if (line != null) {
-        val seconds = timeStrToSeconds(line)
+        val seconds = timeStrToSeconds(line) //Когда это будет в данный момент?
         if (seconds == -1) {
             println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
         }
@@ -69,7 +69,40 @@ fun dateStrToDigit(str: String): String = TODO()
  * Перевести её в строковый формат вида "15 июля 2016".
  * При неверном формате входной строки вернуть пустую строку
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+
+
+    var parts = digital.split(".")
+
+    var result = ""
+    if ((parts.size == 3) && (parts[0].length == 2) && (parts[0].all { it -> it.isDigit() }) && (Integer.parseInt(parts[0]) > 0 && Integer.parseInt(parts[0]) < 32)
+            && (parts[1].length == 2) && (parts[1].all { it -> it.isDigit() }) && (Integer.parseInt(parts[1]) > 0 && Integer.parseInt(parts[1]) < 13)
+            && (parts[2].length == 4) && (parts[2].all { it -> it.isDigit() }) && (Integer.parseInt(parts[2]) > 0)) {
+
+        result = Integer.parseInt(parts[0]).toString()
+
+        when (parts[1]) {
+            "01" -> result += " января "
+            "02" -> result += " февраля "
+            "03" -> result += " марта "
+            "04" -> result += " апреля "
+            "05" -> result += " мая "
+            "06" -> result += " июня "
+            "07" -> result += " июля "
+            "08" -> result += " августа "
+            "09" -> result += " сентября "
+            "10" -> result += " октября "
+            "11" -> result += " ноября "
+            "12" -> result += " декабря "
+            else -> result = ""
+        }
+
+        result += parts[2]
+    }
+
+    return result
+
+}
 
 /**
  * Сложная
@@ -187,4 +220,115 @@ fun fromRoman(roman: String): Int = TODO()
  * Вернуть список размера cells, содержащий элементы ячеек устройства после выполнения всех команд.
  * Например, для 10 ячеек и командной строки +>+>+>+>+ результат должен быть 0,0,0,0,0,1,1,1,1,1
  */
-fun computeDeviceCells(cells: Int, commands: String): List<Int> = TODO()
+
+fun closedSymbolChecker(openSymbol: Char, closeSymbol: Char, commands: String): Boolean {
+
+    var counter = 0
+
+    for (i in 0 until commands.length) {
+        if (commands[i] == openSymbol)
+            counter += 1
+        if (commands[i] == closeSymbol)
+            counter -= 1
+
+    }
+    if (counter != 0)
+        throw IllegalArgumentException("")
+    else
+        return true
+}
+
+
+fun findNextSymbol(symbol: Char, index: Int, commands: String, forward: Boolean): Int {
+
+    var subList = if (forward) commands.subSequence(index + 1, commands.length) else commands.subSequence(0, index)
+
+    var indexn = if (forward) index + subList.indexOfFirst { item -> item == symbol } + 2 else subList.indexOfLast { item -> item == symbol } + 1
+
+    return indexn
+}
+
+
+fun computeDeviceCells(cells: Int, commands: String): List<Int> {
+
+    var cellsList = mutableListOf<Int>()
+
+    for (i in 0 until cells)
+        cellsList.add(0)
+
+    var cellsListIndex = cells / 2
+
+    closedSymbolChecker('[', ']', commands)
+    closedSymbolChecker('{', '}', commands)
+
+    var i = 0
+
+
+    val length = commands.length
+
+    loop@ while (i < length) {
+
+        //println("i=$i")
+        //println("command=${commands[i]}")
+
+        when (commands[i]) {
+            ' ' -> {
+            }
+            '>' -> {
+
+                cellsListIndex += 1
+                if (cellsListIndex >= cells) throw IllegalStateException("Out of range")
+            }
+            '<' -> {
+                cellsListIndex -= 1
+                if (cellsListIndex < 0) throw IllegalStateException("Out of range")
+            }
+            '+' -> {
+                cellsList[cellsListIndex] += 1
+            }
+            '-' -> {
+                cellsList[cellsListIndex] -= 1
+            }
+            '[' -> {
+                if (cellsList[cellsListIndex] == 0) {
+                    i = findNextSymbol(']', i, commands, true)
+                    continue@loop
+                }
+
+            }
+            ']' -> {
+
+                if (cellsList[cellsListIndex] != 0) {
+                    i = findNextSymbol('[', i, commands, false)
+                    continue@loop
+                }
+
+            }
+            '{' -> {
+
+                if (cellsList[cellsListIndex] == 0) {
+                    i = findNextSymbol('}', i, commands, true)
+                    continue@loop
+                }
+
+            }
+            '}' -> {
+                if (cellsList[cellsListIndex] != 0) {
+                    i = findNextSymbol('{', i, commands, false)
+                    continue@loop
+                }
+            }
+            else -> {
+                throw IllegalArgumentException("Wrong command")
+            }
+
+        }
+
+        println(cellsList)
+
+        i++
+
+    }
+
+    return cellsList
+}

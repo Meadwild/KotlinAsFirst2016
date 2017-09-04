@@ -37,6 +37,8 @@ class Tests {
     @Test
     @Tag("Hard")
     fun generateSpiral() {
+
+
         assertEquals(createMatrix(1, 1, listOf(listOf(1))), generateSpiral(1, 1))
         assertEquals(createMatrix(2, 2,
                 listOf(
@@ -170,6 +172,9 @@ class Tests {
     @Test
     @Tag("Easy")
     fun unaryMinus() {
+
+        assertEquals(-createMatrix(1, 1, 2), createMatrix(1, 1, -2))
+
         assertEquals(createMatrix(1, 1, listOf(listOf(3))), -createMatrix(1, 1, listOf(listOf(-3))))
         assertEquals(createMatrix(2, 2, listOf(listOf(-1, -2), listOf(-3, -4))),
                 -createMatrix(2, 2, listOf(listOf(1, 2), listOf(3, 4))))
